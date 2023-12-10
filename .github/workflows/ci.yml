@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - develop
+  push:
+    branches:
+      - develop
+  release:
+    types:
+      - published
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    env:
+      NUGET_SRC: github
+      REGISTRY_URL: https://nuget.pkg.github.com/fkthat/index.json
+      REGISTRY_RW_PAT: ${{secrets.REGISTRY_RW_PAT}}
+    steps:
+      - name: Setup NuGet
+        run: >-
+          dotnet nuget add source $REGISTRY_URL -n $NUGET_SRC
+          -u fkthat -p $REGISTRY_RW_PAT --store-password-in-clear-text
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Restore
+        run: dotnet restore
+      - name: Build
+        run: dotnet build -c Release --no-restore
+      - name: Test
+        run: dotnet test -c Release --no-build
+      - name: Pack
+        run: dotnet pack -c Release --no-build
+      - name: Push
+        if: github.event_name == 'release'
+        run: dotnet nuget push **/*.nupkg -s $NUGET_SRC
