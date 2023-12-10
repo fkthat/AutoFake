@@ -1,0 +1,30 @@
+<Project>
+  <PropertyGroup>
+    <VersionPrefix>0.0.1</VersionPrefix>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Product>AutoFake</Product>
+    <Company>fkthat.net</Company>
+    <Copyright>© fkthat.net, 2023</Copyright>
+    <Authors>fkthat</Authors>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/fkthat/AutoFake</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/fkthat/AutoFake</PackageProjectUrl>
+    <Description>AutoFake</Description>
+    <PackageTags></PackageTags>
+    <PackageReleaseNotes>@(ReleaseNotes, '%0a')</PackageReleaseNotes>
+  </PropertyGroup>
+  <Target Name="PreparePackageReleaseNotesFromFile" BeforeTargets="GenerateNuspec"
+    Condition="Exists('$(MSBuildProjectDir)RELEASE-NOTES')">
+    <ReadLinesFromFile File="$(MSBuildProjectDir)RELEASE-NOTES" >
+      <Output TaskParameter="Lines" ItemName="ReleaseNotes"/>
+    </ReadLinesFromFile>
+  </Target>
+</Project>
